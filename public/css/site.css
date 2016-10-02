@@ -32,3 +32,16 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+table {
+  border-style: solid;
+  border-collapse: collapse;
+}
+
+td {
+  height: 2em;
+  width: 2em;
+  text-align: center;
+  border-style: solid;
+
+}

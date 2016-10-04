@@ -11,6 +11,8 @@
                           [0 0 0 4 1 9 0 0 5]
                           [0 0 0 0 8 0 0 7 9]]))
 
+(def selected-cell (reagent/atom {:coords [0 0]}))
+
 (defn value-at [board coord]
   (get-in board coord))
 
@@ -18,9 +20,16 @@
   (assoc-in board coord new-value))
 ;; -------------------------
 ;; Components
+
+(defn number-selector []
+  [:div (for [number (range 0 10)]
+          [:button
+            {:on-click #(swap! board set-value-at (:coords @selected-cell) number)}
+            number])])
+
 (defn cell [coords]
   (let [value (reagent/atom (value-at @board coords))]
-    [:td {:on-click #(swap! board set-value-at coords (inc @value))}
+    [:td {:on-click #(swap! selected-cell assoc :coords coords)}
        (when (not (zero? @value)) @value)]))
 
 (defn sudoku-board []
@@ -33,7 +42,9 @@
 
 (defn home-page []
   [:div [:h1 "Sudoku"]
-   [sudoku-board]])
+   [sudoku-board]
+   [number-selector]
+   [:h1 (apply concat (map str (map inc (:coords @selected-cell))))]])
 
 ;; -------------------------
 ;; Initialize app

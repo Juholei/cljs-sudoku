@@ -1,5 +1,6 @@
 (ns sudoku.core
-    (:require [reagent.core :as reagent]))
+    (:require [reagent.core :as reagent]
+              [sudoku.lib-sudoku :as s]))
 
 (def board (reagent/atom [[5 3 0 0 7 0 0 0 0]
                           [6 0 0 1 9 5 0 0 0]
@@ -13,24 +14,21 @@
 
 (def selected-cell (reagent/atom {:coords [0 0]}))
 
-(defn value-at [board coord]
-  (get-in board coord))
-
-(defn set-value-at [board coord new-value]
-  (assoc-in board coord new-value))
 ;; -------------------------
 ;; Components
 
 (defn number-selector []
   [:div (for [number (range 0 10)]
           [:button
-            {:on-click #(swap! board set-value-at (:coords @selected-cell) number)}
+            {:on-click #(swap! board s/set-value-at (:coords @selected-cell) number)}
             number])])
 
 (defn cell [coords]
-  (let [value (reagent/atom (value-at @board coords))]
-    [:td {:on-click #(swap! selected-cell assoc :coords coords)}
-       (when (not (zero? @value)) @value)]))
+  (let [value (reagent/atom (s/value-at @board coords))
+        element (if (s/valid-row? @board coords) :td :td.wrong)]
+    [element
+      {:on-click #(swap! selected-cell assoc :coords coords)}
+      (when (not (zero? @value)) @value)]))
 
 (defn sudoku-board []
   [:table [:tbody (for [row (range 0 9)]

@@ -25,7 +25,7 @@
 
 (defn cell [coords]
   (let [value (reagent/atom (s/value-at @board coords))
-        element (if (s/valid-row? @board coords) :td :td.wrong)]
+        element (if (s/duplicate? @board coords @value) :td :td.wrong)]
     [element
       {:on-click #(swap! selected-cell assoc :coords coords)}
       (when (not (zero? @value)) @value)]))

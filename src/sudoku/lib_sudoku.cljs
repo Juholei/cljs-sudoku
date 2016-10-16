@@ -32,25 +32,41 @@
                 (conj acc (value-at board xy)))]
     (reduce values '() coords)))
 
-(defn valid-row? [board coord]
-  (= all-values (row-values board coord)))
-
-(defn valid-col? [board coord]
-  (= all-values (col-values board coord)))
-
-(defn valid-block? [board coord]
-  (= all-values (block-values board coord)))
-
-(defn valid-solution? [board coord]
-  (and (valid-row? board coord)
-       (valid-col? board coord)
-       (valid-block? board coord)))
-
 (defn contains-duplicates? [a-seq]
   (> (count a-seq)
      (count (set a-seq))))
 
 (defn duplicate? [board coord value]
   (not (or (> (get (frequencies (filter pos? (row-values board coord))) value) 1)
-            (> (get (frequencies (filter pos? (col-values board coord))) value) 1)
-            (> (get (frequencies (filter pos? (block-values board coord))) value) 1))))
+           (> (get (frequencies (filter pos? (col-values board coord))) value) 1)
+           (> (get (frequencies (filter pos? (block-values board coord))) value) 1))))
+
+(defn- rows [board]
+  (for [row (range 0 9)]
+    (row-values board [row 0])))
+
+(defn- cols [board]
+  (for [col (range 0 9)]
+    (col-values board [0 col])))
+
+(defn- blocks [board]
+  (for [row [0 3 6]
+        col [0 3 6]]
+    (block-values board [row col])))
+
+(defn- valid-rows? [board]
+  (every? true? (for [row (rows board)]
+                 (= (set row) all-values))))
+
+(defn- valid-cols? [board]
+  (every? true? (for [col (cols board)]
+                 (= (set col) all-values))))
+
+(defn- valid-blocks? [board]
+  (every? true? (for [block (blocks board)]
+                 (= (set block) all-values))))
+
+(defn valid-solution? [board]
+  (and (valid-rows? board)
+       (valid-cols? board)
+       (valid-blocks? board)))

@@ -31,9 +31,11 @@
       (when (not (zero? @value)) @value)]))
 
 (defn sudoku-board []
-  [:table [:tbody (for [row (range 0 9)]
-            [:tr (for [column (range 0 9)]
-                   [cell [row column]])])]])
+  (fn []
+    (js/console.log (str "Completed: " (s/valid-solution? @board)))
+    [:table [:tbody (for [row (range 0 9)]
+              [:tr (for [column (range 0 9)]
+                     [cell [row column]])])]]))
 
 ;; -------------------------
 ;; Views

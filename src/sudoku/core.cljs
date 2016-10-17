@@ -31,12 +31,14 @@
       (when (not (zero? @value)) @value)]))
 
 (defn sudoku-board []
-  (fn []
-    (js/console.log (str "Completed: " (s/valid-solution? @board)))
-    [:table [:tbody (for [row (range 0 9)]
-              [:tr (for [column (range 0 9)]
-                     [cell [row column]])])]]))
+  [:div.sidebyside [:table [:tbody (for [row (range 0 9)]
+           [:tr (for [column (range 0 9)]
+                  [cell [row column]])])]]])
 
+(defn score-display []
+  (fn []
+    (when (s/valid-solution? @board)
+      [:div.sidebyside [:h2 "You win!"]])))
 ;; -------------------------
 ;; Views
 
@@ -44,7 +46,7 @@
   [:div [:h1 "Sudoku"]
    [sudoku-board]
    [number-selector]
-   [:h1 (apply concat (map str (map inc (:coords @selected-cell))))]])
+  [score-display]])
 
 ;; -------------------------
 ;; Initialize app

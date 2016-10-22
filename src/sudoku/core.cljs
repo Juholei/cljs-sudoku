@@ -12,28 +12,29 @@
                           [0 0 0 4 1 9 0 0 5]
                           [0 0 0 0 8 0 0 7 9]]))
 
-(def selected-cell (reagent/atom {:coords [0 0]}))
-
 ;; -------------------------
 ;; Components
 
-(defn number-selector []
-  [:div (for [number (range 0 10)]
-          [:button
-            {:on-click #(swap! board s/set-value-at (:coords @selected-cell) number)}
-            number])])
-
 (defn cell [coords]
-  (let [value (reagent/atom (s/value-at @board coords))
-        element (if (s/duplicate? @board coords @value) :td :td.wrong)]
+  (let [value (s/value-at @board coords)
+        element (if (s/duplicate? @board coords value) :td :td.wrong)]
     [element
-      {:on-click #(swap! selected-cell assoc :coords coords)}
-      (when (not (zero? @value)) @value)]))
+      [:input {:type "number"
+               :value (when (not (zero? value)) value)
+               :min 0
+               :max 9
+               :on-change (fn [e]
+                            (js/console.log "on-change")
+                            (swap! board s/set-value-at coords (int (.-target.value e)))
+                            (js/console.log @board))}]]))
 
 (defn sudoku-board []
-  [:div.sidebyside [:table [:tbody (for [row (range 0 9)]
-           [:tr (for [column (range 0 9)]
-                  [cell [row column]])])]]])
+  [:div.sidebyside
+    [:table
+      [:tbody (for [row (range 0 9)]
+                ^{:key row} [:tr (for [column (range 0 9)]
+                                   ^{:key (str row column)}
+                                   [cell [row column]])])]]])
 
 (defn score-display []
   (fn []
@@ -45,8 +46,7 @@
 (defn home-page []
   [:div [:h1 "Sudoku"]
    [sudoku-board]
-   [number-selector]
-  [score-display]])
+   [score-display]])
 
 ;; -------------------------
 ;; Initialize app

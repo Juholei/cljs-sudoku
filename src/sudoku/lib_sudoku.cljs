@@ -16,7 +16,7 @@
 (defn- col-values [board coord]
   (let [[_ col] coord
         column-values (fn [acc row]
-              (conj acc (get-in row [col])))]
+                        (conj acc (get-in row [col])))]
     (reduce column-values '() board)))
 
 (defn- block-top-left [coords]
@@ -29,7 +29,7 @@
                      offset-y [0 1 2]]
                  [(+ x offset-x) (+ y offset-y)])
         values (fn [acc xy]
-                (conj acc (value-at board xy)))]
+                 (conj acc (value-at board xy)))]
     (reduce values '() coords)))
 
 (defn contains-duplicates? [a-seq]
@@ -56,15 +56,15 @@
 
 (defn- valid-rows? [board]
   (every? true? (for [row (rows board)]
-                 (= (set row) all-values))))
+                  (= (set row) all-values))))
 
 (defn- valid-cols? [board]
   (every? true? (for [col (cols board)]
-                 (= (set col) all-values))))
+                  (= (set col) all-values))))
 
 (defn- valid-blocks? [board]
   (every? true? (for [block (blocks board)]
-                 (= (set block) all-values))))
+                  (= (set block) all-values))))
 
 (defn valid-solution? [board]
   (and (valid-rows? board)

@@ -1,6 +1,6 @@
 (ns sudoku.core
-    (:require [reagent.core :as reagent]
-              [sudoku.lib-sudoku :as s]))
+  (:require [reagent.core :as reagent]
+            [sudoku.lib-sudoku :as s]))
 
 (def board (reagent/atom [[5 3 0 0 7 0 0 0 0]
                           [6 0 0 1 9 5 0 0 0]
@@ -19,22 +19,21 @@
   (let [value (s/value-at @board coords)
         element (if (s/duplicate? @board coords value) :td :td.wrong)]
     [element
-      [:input {:type "number"
-               :value (when (not (zero? value)) value)
-               :min 0
-               :max 9
-               :on-change (fn [e]
-                            (js/console.log "on-change")
-                            (swap! board s/set-value-at coords (int (.-target.value e)))
-                            (js/console.log @board))}]]))
+     [:input {:type "number"
+              :value (when (not (zero? value)) value)
+              :min 0
+              :max 9
+              :on-change (fn [e]
+                           (swap! board s/set-value-at coords
+                                  (int (.-target.value e))))}]]))
 
 (defn sudoku-board []
   [:div.sidebyside
-    [:table
-      [:tbody (for [row (range 0 9)]
-                ^{:key row} [:tr (for [column (range 0 9)]
-                                   ^{:key (str row column)}
-                                   [cell [row column]])])]]])
+   [:table
+    [:tbody (for [row (range 0 9)]
+              ^{:key row} [:tr (for [column (range 0 9)]
+                                 ^{:key (str row column)}
+                                 [cell [row column]])])]]])
 
 (defn score-display []
   (fn []

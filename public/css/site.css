@@ -49,3 +49,11 @@ td {
 .wrong {
   background-color: red;
 }
+
+.numberinput {
+  border-style: none;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+}

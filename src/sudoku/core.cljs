@@ -19,13 +19,14 @@
   (let [value (s/value-at @board coords)
         element (if (s/duplicate? @board coords value) :td :td.wrong)]
     [element
-     [:input {:type "number"
-              :value (when (not (zero? value)) value)
-              :min 0
-              :max 9
-              :on-change (fn [e]
-                           (swap! board s/set-value-at coords
-                                  (int (.-target.value e))))}]]))
+     [:input.numberinput
+      {:type "number"
+       :value (when (not (zero? value)) value)
+       :min 0
+       :max 9
+       :on-change (fn [e]
+                    (swap! board s/set-value-at coords
+                           (int (.-target.value e))))}]]))
 
 (defn sudoku-board []
   [:div.sidebyside

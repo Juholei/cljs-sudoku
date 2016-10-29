@@ -57,3 +57,7 @@ td {
   text-align: center;
   background-color: transparent;
 }
+
+.unchangeable {
+  font-weight: bold;
+}

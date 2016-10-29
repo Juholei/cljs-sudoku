@@ -12,21 +12,43 @@
                           [0 0 0 4 1 9 0 0 5]
                           [0 0 0 0 8 0 0 7 9]]))
 
+(def starting-board [[5 3 0 0 7 0 0 0 0]
+                     [6 0 0 1 9 5 0 0 0]
+                     [0 9 8 0 0 0 0 6 0]
+                     [8 0 0 0 6 0 0 0 3]
+                     [4 0 0 8 0 3 0 0 1]
+                     [7 0 0 0 2 0 0 0 6]
+                     [0 6 0 0 0 0 2 8 0]
+                     [0 0 0 4 1 9 0 0 5]
+                     [0 0 0 0 8 0 0 7 9]])
+
+(defn starting-value? [coords]
+  (not (zero? (s/value-at starting-board coords))))
+
 ;; -------------------------
 ;; Components
+
+(defn number-input [coords current-value]
+  [:input.numberinput
+   {:type "number"
+    :pattern "[0-9]*"
+    :inputmode "numeric"
+    :value (when (not (zero? current-value)) current-value)
+    :min 0
+    :max 9
+    :on-change (fn [e]
+                 (swap! board s/set-value-at coords
+                        (int (.-target.value e))))}])
+
+(defn unchangeable-number [value]
+  [:span.unchangeable value])
 
 (defn cell [coords]
   (let [value (s/value-at @board coords)
         element (if (s/duplicate? @board coords value) :td :td.wrong)]
-    [element
-     [:input.numberinput
-      {:type "number"
-       :value (when (not (zero? value)) value)
-       :min 0
-       :max 9
-       :on-change (fn [e]
-                    (swap! board s/set-value-at coords
-                           (int (.-target.value e))))}]]))
+    [element (if (starting-value? coords)
+               [unchangeable-number value]
+               [number-input coords value])]))
 
 (defn sudoku-board []
   [:div.sidebyside

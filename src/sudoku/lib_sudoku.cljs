@@ -32,10 +32,6 @@
                  (conj acc (value-at board xy)))]
     (reduce values '() coords)))
 
-(defn contains-duplicates? [a-seq]
-  (> (count a-seq)
-     (count (set a-seq))))
-
 (defn duplicate? [board coord value]
   (not (or (> (get (frequencies (filter pos? (row-values board coord))) value) 1)
            (> (get (frequencies (filter pos? (col-values board coord))) value) 1)
@@ -70,3 +66,53 @@
   (and (valid-rows? board)
        (valid-cols? board)
        (valid-blocks? board)))
+
+(defn has-value? [board coord]
+  ((complement zero?) (value-at board coord)))
+
+(defn valid-values-for [board coord]
+  (if (has-value? board coord)
+    #{}
+    (let [values (set/union (block-values board coord)
+                            (row-values board coord)
+                            (col-values board coord))]
+      (set/difference all-values values))))
+
+(defn filled? [board]
+  (let [board-set (set (apply concat board))]
+    ((complement contains?) board-set 0)))
+
+(defn find-empty-point [board]
+  (let [coords (for [row (range 0 9)
+                     col (range 0 9)]
+                 [row col])
+        zero-value? (fn [coords]
+          (cond
+            (empty? coords) nil
+            (zero? (value-at board (first coords))) (first coords)
+            :else (recur (rest coords))))]
+    (zero-value? coords)))
+
+(defn solve-helper [board]
+  (if (filled? board)
+    (when (valid-solution? board)
+      [board])
+      (let [empty-spot (find-empty-point board)]
+        (for [valid-value (valid-values-for board empty-spot)
+              new-board (solve-helper (set-value-at board empty-spot valid-value))]
+            (do (println "solving")
+            (when (seq new-board)
+              new-board))))))
+
+(defn solve [board]
+  (first (solve-helper board)))
+
+(defn generate-board []
+  (let [random-value-to-board (fn [board value]
+                                 (let [row (rand-int 9)
+                                       column (rand-int 9)]
+                                   (set-value-at board [row column] value)))
+        empty-board (vec (repeat 9 (vec (repeat 9 0))))
+        values (repeatedly 15 #(inc (rand-int 9)))]
+    (reduce random-value-to-board empty-board values)))
+

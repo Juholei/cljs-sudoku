@@ -2,25 +2,9 @@
   (:require [reagent.core :as reagent]
             [sudoku.lib-sudoku :as s]))
 
-(def board (reagent/atom [[5 3 0 0 7 0 0 0 0]
-                          [6 0 0 1 9 5 0 0 0]
-                          [0 9 8 0 0 0 0 6 0]
-                          [8 0 0 0 6 0 0 0 3]
-                          [4 0 0 8 0 3 0 0 1]
-                          [7 0 0 0 2 0 0 0 6]
-                          [0 6 0 0 0 0 2 8 0]
-                          [0 0 0 4 1 9 0 0 5]
-                          [0 0 0 0 8 0 0 7 9]]))
+(def starting-board (s/generate-board))
 
-(def starting-board [[5 3 0 0 7 0 0 0 0]
-                     [6 0 0 1 9 5 0 0 0]
-                     [0 9 8 0 0 0 0 6 0]
-                     [8 0 0 0 6 0 0 0 3]
-                     [4 0 0 8 0 3 0 0 1]
-                     [7 0 0 0 2 0 0 0 6]
-                     [0 6 0 0 0 0 2 8 0]
-                     [0 0 0 4 1 9 0 0 5]
-                     [0 0 0 0 8 0 0 7 9]])
+(def board (reagent/atom starting-board))
 
 (defn starting-value? [coords]
   (not (zero? (s/value-at starting-board coords))))

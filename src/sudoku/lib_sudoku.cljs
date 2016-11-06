@@ -111,8 +111,10 @@
   (let [random-value-to-board (fn [board value]
                                  (let [row (rand-int 9)
                                        column (rand-int 9)]
-                                   (set-value-at board [row column] value)))
+                                   (if (and (duplicate? (set-value-at board [row column] value) [row column] value)
+                                            (not (has-value? board [row column])))
+                                     (set-value-at board [row column] value)
+                                     board)))
         empty-board (vec (repeat 9 (vec (repeat 9 0))))
-        values (repeatedly 15 #(inc (rand-int 9)))]
+        values (repeatedly 45 #(inc (rand-int 9)))]
     (reduce random-value-to-board empty-board values)))
-

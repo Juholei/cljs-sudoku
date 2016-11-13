@@ -21,8 +21,10 @@
     :min 0
     :max 9
     :on-change (fn [e]
-                 (swap! board s/set-value-at coords
-                        (int (.-target.value e))))}])
+                 (let [new-value (.-target.value e)]
+                   (when (< (count (str new-value)) 2)
+                     (swap! board s/set-value-at coords
+                            (int new-value)))))}])
 
 (defn unchangeable-number [value]
   [:span.unchangeable value])
